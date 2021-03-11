@@ -45,7 +45,8 @@ NOTRUNNING="[\033[1;31mnot running\033[0m]"
 
 # Function to get the process id of the VNC Server
 fn_pid() {
-    CHECKPID=$(ps -fu ${USER} | grep "[x]0vncserver" | awk '{print $2}')
+    #CHECKPID=$(ps -fu ${USER} | grep "[x]0vncserver" | awk '{print $2}')
+    CHECKPID=$(netstat -tpln 2>/dev/null | grep X0tigervnc | head -1 | awk '{print $7}' | cut -d '/' -f 1)
     if [[ ${CHECKPID} =~ ^[0-9]+$ ]] 
     then
         VAR=${CHECKPID}
@@ -81,7 +82,7 @@ case "$1" in
             echo -e "VNC Server is running (pid: ${VAR})"
 	    echo
         else
-            ${VNCSERVER} -display ${DISPLAY} -passwordfile ${PASSWDFILE} -rfbport ${VNCPORT} >> ${LOGFILE} 2>&1 &
+            ${VNCSERVER} -localhost no -display ${DISPLAY} -passwordfile ${PASSWDFILE} -rfbport ${VNCPORT} >> ${LOGFILE} 2>&1 &
 	    if [ $? -eq 0 ]
 	    then
             	fn_pid
@@ -107,7 +108,7 @@ case "$1" in
 
             if [ $? -eq 0 ]
             then 
-                ${VNCSERVER} -display ${DISPLAY} -passwordfile ${PASSWDFILE} -rfbport ${VNCPORT} >> ${LOGFILE} 2>&1 &
+                ${VNCSERVER} -localhost no -display ${DISPLAY} -passwordfile ${PASSWDFILE} -rfbport ${VNCPORT} >> ${LOGFILE} 2>&1 &
                 echo -e ${OK}
 		echo
                 fn_pid 
@@ -122,7 +123,7 @@ case "$1" in
 
         else
 
-            ${VNCSERVER} -display ${DISPLAY} -passwordfile ${PASSWDFILE} -rfbport ${VNCPORT} >> ${LOGFILE} 2>&1 &
+            ${VNCSERVER} -localhost no -display ${DISPLAY} -passwordfile ${PASSWDFILE} -rfbport ${VNCPORT} >> ${LOGFILE} 2>&1 &
             if [ $? -eq 0 ]
             then
                 echo -e ${OK}
